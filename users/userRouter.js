@@ -20,7 +20,14 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', validateUserId, (req, res) => {
-  // do your magic!
+  const { id } = req.params
+	userDB.getById(id)
+		.then(user => {
+			res.status(200).json(user)
+		})
+		.catch(err => {
+			res.status(500).json({ error: 'I cannot provide any info, try again!', err })
+		})
 });
 
 router.post('/', validateUser, (req, res) => {
@@ -55,7 +62,7 @@ router.delete('/:id', validateUserId, (req, res) => {
 router.put('/:id', validateUserId, (req, res) => {
   const { id } = req.params
 
-  usersDB.update(id, req.body)
+  userDB.update(id, req.body)
 		.then(user => {
 			res.status(200).json({ success: 'Info Updated!', info: req.body })
 		})
@@ -68,7 +75,7 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   const { text } = req.body
 	const user_id = req.params.id
 
-	usersDB.getById(user_id)
+	userDB.getById(user_id)
 		.then(post => {
 			if (!post) {
 				null
